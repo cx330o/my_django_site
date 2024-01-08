@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+*.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# Backup zips
+源文件/
+
+# API keys
+apikey
+
+# Misc
+mysite/
+_backup/
+COMMIT_PLAN.md
+
+# Deleted directories (should not be re-added)
+others/
+dashboard/
+demo_output/
+demo_full.py
+run_commits.ps1
+Infrastructure & Analytics/
+empty_temp/
