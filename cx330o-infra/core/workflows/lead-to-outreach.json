@@ -1,0 +1,96 @@
+{
+  "name": "Lead to Outreach Automation",
+  "description": "预置工作流：线索获取 → AI 研究 → 评分 → 邮件生成 → 发送",
+  "nodes": [
+    {
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [250, 300],
+      "parameters": {
+        "rule": { "interval": [{ "field": "hours", "hoursInterval": 6 }] }
+      }
+    },
+    {
+      "name": "Fetch New Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [450, 300],
+      "parameters": {
+        "url": "http://lead-gen-pro:8000/api/leads?status=new",
+        "method": "GET",
+        "responseFormat": "json"
+      }
+    },
+    {
+      "name": "Filter Qualified",
+      "type": "n8n-nodes-base.filter",
+      "position": [650, 300],
+      "parameters": {
+        "conditions": {
+          "number": [{ "value1": "={{ $json.score }}", "operation": "largerEqual", "value2": 50 }]
+        }
+      }
+    },
+    {
+      "name": "Generate Email via AI",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [850, 300],
+      "parameters": {
+        "url": "http://outreach-ai:8001/api/generate-email",
+        "method": "POST",
+        "bodyParametersUi": {
+          "parameter": [
+            { "name": "lead_name", "value": "={{ $json.name }}" },
+            { "name": "lead_company", "value": "={{ $json.company }}" },
+            { "name": "lead_email", "value": "={{ $json.email }}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Send Email",
+      "type": "n8n-nodes-base.gmail",
+      "position": [1050, 300],
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "={{ $json.email_subject }}",
+        "message": "={{ $json.email_body }}"
+      }
+    },
+    {
+      "name": "Update CRM",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1250, 300],
+      "parameters": {
+        "url": "http://crm-pro:3000/api/contacts/update",
+        "method": "PATCH",
+        "bodyParametersUi": {
+          "parameter": [
+            { "name": "id", "value": "={{ $json.lead_id }}" },
+            { "name": "status", "value": "contacted" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Log to Analytics DB",
+      "type": "n8n-nodes-base.postgres",
+      "position": [1250, 500],
+      "parameters": {
+        "operation": "insert",
+        "table": "outreach",
+        "columns": "lead_id, email_subject, sent_at, status",
+        "additionalFields": {}
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": { "main": [[{ "node": "Fetch New Leads", "type": "main", "index": 0 }]] },
+    "Fetch New Leads": { "main": [[{ "node": "Filter Qualified", "type": "main", "index": 0 }]] },
+    "Filter Qualified": { "main": [[{ "node": "Generate Email via AI", "type": "main", "index": 0 }]] },
+    "Generate Email via AI": { "main": [[{ "node": "Send Email", "type": "main", "index": 0 }]] },
+    "Send Email": { "main": [
+      [{ "node": "Update CRM", "type": "main", "index": 0 }],
+      [{ "node": "Log to Analytics DB", "type": "main", "index": 0 }]
+    ]}
+  }
+}
