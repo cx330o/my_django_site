@@ -1,0 +1,80 @@
+services:
+  # cx330o FlowEngine
+  flowengine:
+    build: ./flowengine
+    ports:
+      - "5678:5678"
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=db
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=flowengine
+      - DB_POSTGRESDB_USER=infra
+      - DB_POSTGRESDB_PASSWORD=infra
+    volumes:
+      - flowengine_data:/home/node/.n8n
+      - ./workflows:/home/node/workflows
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # cx330o FlowEngine init
+  flowengine-init:
+    image: curlimages/curl:latest
+    depends_on:
+      - flowengine
+    restart: "no"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Waiting for FlowEngine to be ready..."
+        for i in $(seq 1 60); do
+          if curl -sf http://flowengine:5678/healthz > /dev/null 2>&1; then
+            echo "FlowEngine is up, attempting owner setup..."
+            RESULT=$(curl -s -w "\n%{http_code}" -X POST http://flowengine:5678/rest/owner/setup \
+              -H "Content-Type: application/json" \
+              -d '{"email":"admin@cx330o.com","firstName":"cx330o","lastName":"Admin","password":"abc123"}')
+            CODE=$(echo "$RESULT" | tail -1)
+            BODY=$(echo "$RESULT" | head -n -1)
+            if [ "$CODE" = "200" ]; then
+              echo "Owner account created successfully!"
+            else
+              echo "Setup returned $CODE (owner may already exist)"
+            fi
+            exit 0
+          fi
+          echo "Waiting... ($i/60)"
+          sleep 3
+        done
+        echo "FlowEngine did not start in time"
+        exit 1
+
+  # cx330o Analytics
+  analytics:
+    image: metabase/metabase:latest
+    ports:
+      - "3030:3000"
+    environment:
+      - MB_DB_TYPE=postgres
+      - MB_DB_DBNAME=analytics
+      - MB_DB_PORT=5432
+      - MB_DB_USER=infra
+      - MB_DB_PASS=infra
+      - MB_DB_HOST=db
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=infra
+      - POSTGRES_PASSWORD=infra
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+volumes:
+  flowengine_data:
+  pg_data:
