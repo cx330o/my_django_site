@@ -1,0 +1,13 @@
+{
+  "name": "crm-email-parser",
+  "version": "1.0.0",
+  "description": "cx330o email parsing service for CRM",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "multer": "^1.4.5-lts.1"
+  }
+}
