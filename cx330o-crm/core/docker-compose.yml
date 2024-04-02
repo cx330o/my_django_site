@@ -1,0 +1,47 @@
+# cx330o CRM — Customer Management Platform
+
+services:
+  # cx330o CRM Server
+  crm-server:
+    image: twentycrm/twenty:latest  # cx330o CRM platform image
+    ports:
+      - "3000:3000"
+    environment:
+      - SERVER_URL=http://localhost:3000
+      - APP_SECRET=cx330o_sales_platform_secret_key_2026
+      - PG_DATABASE_URL=postgres://crm:crm2026@crm-db:5432/default
+      - REDIS_URL=redis://crm-redis:6379
+      - STORAGE_TYPE=local
+      - STORAGE_LOCAL_PATH=.local-storage
+      - DEFAULT_SUBDOMAIN=cx330o
+      - IS_SIGN_UP_DISABLED=false
+    depends_on:
+      crm-db:
+        condition: service_healthy
+      crm-redis:
+        condition: service_started
+    restart: unless-stopped
+
+  # cx330o CRM Database
+  crm-db:
+    image: twentycrm/twenty-postgres:latest  # cx330o CRM database
+    environment:
+      - POSTGRES_USER=crm
+      - POSTGRES_PASSWORD=crm2026
+      - POSTGRES_DB=default
+    volumes:
+      - crm_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crm -d default"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # cx330o CRM Cache
+  crm-redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+volumes:
+  crm_pg_data:
