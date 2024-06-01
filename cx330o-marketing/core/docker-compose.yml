@@ -1,0 +1,83 @@
+# cx330o Marketing — Unified Marketing Automation Deployment
+
+version: "3.8"
+
+services:
+  # ===== cx330o Journey Builder =====
+  journey:
+    image: dittofeed/dittofeed-lite:latest
+    ports:
+      - "3010:3000"
+    environment:
+      - DATABASE_URL=postgres://marketing:marketing@db:5432/journey
+      - PASSWORD=password
+      - SECRET_KEY=your-secret-key
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # ===== cx330o Mailer (High-performance Email Delivery) =====
+  mailer:
+    image: listmonk/listmonk:latest
+    ports:
+      - "9000:9000"
+    environment:
+      - LISTMONK_app__address=0.0.0.0:9000
+      - LISTMONK_db__host=db
+      - LISTMONK_db__port=5432
+      - LISTMONK_db__user=marketing
+      - LISTMONK_db__password=marketing
+      - LISTMONK_db__database=mailer
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # ===== cx330o Live Chat =====
+  chat:
+    image: chatwoot/chatwoot:latest
+    ports:
+      - "3011:3000"
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_USERNAME=marketing
+      - POSTGRES_PASSWORD=marketing
+      - POSTGRES_DATABASE=chat
+      - REDIS_URL=redis://redis:6379
+      - SECRET_KEY_BASE=your-chatwoot-secret
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+
+  # ===== cx330o Marketing API Gateway =====
+  gateway:
+    build: ./gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - JOURNEY_URL=http://journey:3000
+      - MAILER_URL=http://mailer:9000
+      - CHAT_URL=http://chat:3000
+    depends_on:
+      - journey
+      - mailer
+      - chat
+    restart: unless-stopped
+
+  # ===== Shared Infrastructure =====
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=marketing
+      - POSTGRES_PASSWORD=marketing
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+volumes:
+  pg_data:
