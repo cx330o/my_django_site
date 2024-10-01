@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cx330o Sales Platform</title>
+<link rel="stylesheet" href="/cx330o-theme.css">
+</head>
+<body class="cx-embed-body">
+<div class="cx-topbar">
+  <div class="cx-topbar-left">
+    <a href="/">← 返回首页</a>
+    <span class="cx-topbar-title" id="pageTitle">加载中...</span>
+  </div>
+  <div class="cx-topbar-right">
+    <a class="cx-btn" id="openDirect" href="#" target="_blank">在新窗口打开 ↗</a>
+  </div>
+</div>
+
+<div class="cx-embed-loading" id="loadingState">
+  <div class="cx-spinner"></div>
+  <span id="loadingText">正在连接服务...</span>
+</div>
+
+<iframe class="cx-embed-frame" id="serviceFrame" src="about:blank" style="display:none;"></iframe>
+
+<script>
+const services = {
+  flow:        { title: 'cx330o FlowEngine',   path: '/flow/',        port: 81 },
+  analytics:   { title: 'cx330o Analytics',     path: '/analytics/',   port: 82 },
+  crm:         { title: 'cx330o CRM',           path: '/crm/',         port: 83 },
+  contracts:   { title: 'cx330o Contracts',     path: '/contracts/',   port: 84 },
+  payments:    { title: 'cx330o Payments',      path: '/payments/',    port: 85 },
+  experiments: { title: 'cx330o Experiments',   path: '/experiments/', port: 86 },
+  voip:        { title: 'cx330o VoIP',          path: '/voip/',        port: 87 },
+  docforge:    { title: 'cx330o DocForge',      path: '/docforge/',    port: 3002 },
+  mailradar:   { title: 'cx330o MailRadar',     path: '/mailradar/',   port: 3003 },
+  markethub:   { title: 'cx330o MarketHub',     path: '/markethub/',   port: 8080 },
+};
+
+function init() {
+  const params = new URLSearchParams(window.location.search);
+  const svc = params.get('svc');
+  const info = services[svc];
+
+  if (!info) {
+    document.getElementById('pageTitle').textContent = '未知服务';
+    document.getElementById('loadingState').innerHTML =
+      '<h2 style="color:var(--cx-text-secondary);">未找到该服务</h2><a href="/" style="color:var(--cx-brand-blue);">返回首页</a>';
+    return;
+  }
+
+  document.title = info.title + ' — cx330o';
+  document.getElementById('pageTitle').textContent = info.title;
+  document.getElementById('loadingText').textContent = '正在连接 ' + info.title + '...';
+
+  const isDocker = (window.location.port === '' || window.location.port === '80');
+  const directUrl = isDocker
+    ? window.location.origin + info.path
+    : window.location.protocol + '//' + window.location.hostname + ':' + info.port + '/';
+
+  document.getElementById('openDirect').href = directUrl;
+
+  const frame = document.getElementById('serviceFrame');
+  frame.onload = function() {
+    document.getElementById('loadingState').style.display = 'none';
+    frame.style.display = 'block';
+  };
+  frame.onerror = function() {
+    document.getElementById('loadingState').innerHTML =
+      '<h2 style="color:var(--cx-text-secondary);">服务连接失败</h2>' +
+      '<span>请确认 ' + info.title + ' 已启动</span>' +
+      '<a href="/" style="color:var(--cx-brand-blue);">返回首页</a>';
+  };
+  frame.src = directUrl;
+
+  // Timeout fallback: if iframe doesn't load in 10s, show frame anyway (some services don't fire onload)
+  setTimeout(function() {
+    if (document.getElementById('loadingState').style.display !== 'none') {
+      document.getElementById('loadingState').style.display = 'none';
+      frame.style.display = 'block';
+    }
+  }, 10000);
+}
+
+init();
+</script>
+</body>
+</html>
