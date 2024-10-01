@@ -1,0 +1,13 @@
+services:
+  gateway:
+    image: nginx:alpine
+    ports:
+      - "80:80"     # Dashboard 入口
+      - "81:81"     # cx330o FlowEngine
+      - "82:82"     # cx330o Analytics
+      - "83:83"     # cx330o CRM
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
