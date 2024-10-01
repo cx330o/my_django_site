@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cx330o Sales Platform</title>
+<link rel="stylesheet" href="/cx330o-theme.css">
+</head>
+<body>
+<div class="cx-topbar">
+  <div class="cx-topbar-left">
+    <a href="/">← 返回首页</a>
+    <span class="cx-topbar-title" id="pageTitle">加载中...</span>
+  </div>
+</div>
+<div class="cx-container" id="content">加载中...</div>
+
+<script>
+const services = {
+  leadhunter: {
+    icon: '🔍', title: 'cx330o LeadHunter', tag: 'Python CLI',
+    desc: '多源线索获取引擎。支持 Google Maps、Yelp、OSINT 等多数据源异步抓取，结合 AI 数据丰富，自动去重清洗，统一输出到 CSV / JSON / Google Sheets。',
+    actions: [
+      { label: '复制启动命令', type: 'copy', value: 'python -m lead_gen_pro --source google_maps --query "restaurants" --location "New York"' },
+      { label: '查看源码', type: 'link', value: 'https://github.com/cx330o/cx330o-leadgen' },
+    ],
+    features: [
+      { title: '异步插件架构', desc: '每个数据源是独立的可插拔 Engine，支持异步并发抓取' },
+      { title: '多源聚合', desc: 'Google Maps + Yelp + OSINT（邮箱/域名/子域名）' },
+      { title: '深度解析', desc: '评论/评分/多语言解析，支持分页抓取' },
+      { title: 'AI 数据丰富', desc: 'LLM 驱动的数据丰富管线，自动生成个性化信息' },
+      { title: '反爬虫', desc: '速率限制、代理轮换、User-Agent 随机化' },
+      { title: '数据质量', desc: '自动去重、验证、清洗，确保数据一致性' },
+    ],
+    engines: [
+      ['GoogleMapsEngine', '商家信息 + 评论', 'Playwright 异步抓取'],
+      ['YelpEngine', '商家信息', '搜索结果提取'],
+      ['OSINTEngine', '邮箱/域名/子域名', '多源情报收集'],
+      ['AIEnricher', 'AI 丰富', 'LLM 分析与个性化'],
+    ],
+    quickstart: `<span class="comment"># 安装依赖</span>\n<span class="cmd">pip install -r requirements.txt</span>\n<span class="cmd">cp .env.example .env</span>  <span class="comment"># 填入 API 密钥</span>\n\n<span class="comment"># 运行抓取</span>\n<span class="cmd">python -m lead_gen_pro --source google_maps --query "restaurants" --location "New York"</span>`,
+    arch: `cx330o-leadgen/\n├── core/          → 主管线编排，统一输出\n├── harvester/     → OSINT 情报引擎\n├── maps-scraper/  → Google Maps 商家抓取\n├── web-scraper/   → Playwright 异步爬虫\n└── enricher/      → LLM 数据丰富`,
+  },
+  outreach: {
+    icon: '🤖', title: 'cx330o OutreachAI', tag: 'Python CLI',
+    desc: 'AI 驱动的销售外联管线。基于 LangGraph 状态机编排 Research → Score → Generate → Send 全流程，多智能体协作（研究员 + 分析师 + 写手），支持 8 阶段销售对话模型。',
+    actions: [
+      { label: '复制启动命令', type: 'copy', value: 'python -m outreach_ai --leads leads.csv --mode email' },
+      { label: '查看源码', type: 'link', value: 'https://github.com/cx330o/cx330o-outreach' },
+    ],
+    features: [
+      { title: 'LangGraph 状态机', desc: 'Research → Score → Generate → Send，条件路由' },
+      { title: '多智能体协作', desc: '研究员 + 分析师 + 写手协同工作' },
+      { title: '8 阶段销售模型', desc: '基于 SPIN 提问法的对话式销售跟踪' },
+      { title: '多 CRM 集成', desc: 'HubSpot / Airtable / Google Sheets' },
+      { title: '邮件管理', desc: '模板管理、定时发送、跟进链、黑名单' },
+      { title: '多 LLM 支持', desc: 'OpenAI / Groq / 任何 LiteLLM 兼容模型' },
+    ],
+    quickstart: `<span class="comment"># 安装依赖</span>\n<span class="cmd">pip install -r requirements.txt</span>\n<span class="cmd">cp .env.example .env</span>\n\n<span class="comment"># 运行外联管线</span>\n<span class="cmd">python -m outreach_ai --leads leads.csv --mode email</span>`,
+    arch: `cx330o-outreach/\n├── core/               → 主管线（研究→评分→生成→发送）\n├── sales-agent/        → 8 阶段对话式销售 AI\n├── email-automations/  → 多智能体协作（分析师+写手）\n├── email-generator/    → 快速 LLM 邮件生成\n├── email-manager/      → 模板管理、定时、跟进链\n└── workflow/           → LangGraph 状态机编排`,
+  },
+  docforge: {
+    icon: '📄', title: 'cx330o DocForge', tag: 'Web UI + REST API',
+    desc: 'PDF 发票和报价单生成服务。基于 Node.js (Express) + React (Ant Design) 构建，提供可视化管理面板和 REST API 接口。支持多币种、自定义模板、公司 Logo。',
+    features: [
+      { title: 'PDF 发票生成', desc: '可自定义模板的专业发票生成' },
+      { title: '报价单创建', desc: '快速生成客户报价/估价文档' },
+      { title: '多币种支持', desc: '支持全球主要货币' },
+      { title: '品牌定制', desc: '公司 Logo、配色、自定义字段' },
+      { title: 'Ant Design 管理面板', desc: 'React 构建的可视化管理界面' },
+      { title: 'REST API', desc: '程序化调用，与 CRM/FlowEngine 集成' },
+    ],
+    quickstart: `<span class="comment"># 作为平台一部分启动</span>\n<span class="cmd">docker compose up -d</span>\n\n<span class="comment"># API 端口</span>\nhttp://localhost:3002\n\n<span class="comment"># 生成发票示例</span>\n<span class="cmd">curl -X POST http://localhost:3002/api/invoice \\</span>\n<span class="cmd">  -H "Content-Type: application/json" \\</span>\n<span class="cmd">  -d '{"client":"Acme Corp","items":[...]}'</span>`,
+    arch: `cx330o-crm/erp-extensions/\n├── backend/    → Node.js (Express) API 服务\n│   └── src/    → 路由、控制器、PDF 生成逻辑\n├── frontend/   → React (Ant Design) 管理面板\n│   └── src/    → 页面、组件、表单\n└── doc/        → 多语言文档`,
+  },
+  mailradar: {
+    icon: '📧', title: 'cx330o MailRadar', tag: 'Web UI + REST API',
+    desc: '邮件解析与 CRM 集成模块。基于 Laravel (PHP) 全栈框架构建，提供 Web 管理界面。支持 Webhook 接收邮件、自动解析联系人、线程追踪、CRM 同步。',
+    features: [
+      { title: 'Webhook 邮件解析', desc: '通过 Webhook 接收并解析入站邮件' },
+      { title: '联系人提取', desc: '从邮件头和正文自动提取联系人信息' },
+      { title: 'CRM 自动同步', desc: '解析后的数据自动同步到 CRM 系统' },
+      { title: '邮件线程追踪', desc: '追踪邮件对话线程和回复链' },
+      { title: '自定义属性映射', desc: '灵活配置字段映射规则' },
+      { title: 'Sendgrid 集成', desc: '支持 Sendgrid Webhook 接入' },
+    ],
+    quickstart: `<span class="comment"># 作为平台一部分启动</span>\n<span class="cmd">docker compose up -d</span>\n\n<span class="comment"># API 端口</span>\nhttp://localhost:3003\n\n<span class="comment"># Webhook 接收邮件</span>\n<span class="cmd">POST http://localhost:3003/api/webhook/inbound</span>`,
+    arch: `cx330o-crm/email-crm/\n├── app/        → Laravel 应用核心\n├── routes/     → Web 路由 + API 路由\n├── resources/  → Blade 视图模板\n├── database/   → 迁移和种子数据\n├── config/     → 配置文件\n└── packages/   → 自定义扩展包`,
+  },
+  markethub: {
+    icon: '📡', title: 'cx330o MarketHub', tag: 'Web UI + REST API',
+    desc: '统一营销自动化平台。通过 API 网关协调 Journey Builder（客户旅程）、Mailer（邮件投递）、Live Chat（在线客服）三大子服务，实现全渠道营销触达。',
+    features: [
+      { title: 'Journey Builder', desc: '客户旅程自动化，全渠道消息编排' },
+      { title: 'Mailer 邮件引擎', desc: 'Go 语言高性能邮件投递，列表管理' },
+      { title: 'Live Chat 在线客服', desc: '全渠道实时客户支持' },
+      { title: 'API 网关', desc: '统一路由，聚合所有营销服务' },
+      { title: '行为评分引擎', desc: '基于用户行为的自动评分和分群' },
+      { title: '多渠道触达', desc: '邮件、短信、WhatsApp、推送通知' },
+    ],
+    quickstart: `<span class="comment"># 启动营销服务（需要 marketing profile）</span>\n<span class="cmd">docker compose --profile marketing up -d</span>\n\n<span class="comment"># 服务端口</span>\nJourney Builder  → :3010\nMailer           → :9000\nLive Chat        → :3011\nAPI Gateway      → :8080`,
+    arch: `cx330o-marketing/\n├── core/gateway/  → API 网关（Node.js Express）\n├── journey/       → 客户旅程自动化（Dittofeed）\n├── mailer/        → 邮件投递引擎（Listmonk / Go）\n├── chat/          → 在线客服（Chatwoot / Rails）\n└── scoring/       → 行为评分引擎（PHP/Symfony）`,
+  },
+  contracts: {
+    icon: '✍️', title: 'cx330o Contracts', tag: 'Web UI + REST API',
+    desc: '电子合同与签名平台（DocuSeal 集成）。支持创建文档模板、多方签署流程、签名追踪、自动提醒。提供完整的 REST API，可与 CRM 和 FlowEngine 深度集成，实现报价→合同→签署的自动化闭环。',
+    features: [
+      { title: '文档模板管理', desc: '拖拽式模板编辑器，支持 PDF 上传和字段标注' },
+      { title: '多方签署', desc: '支持多个签署方、签署顺序、并行/串行签署流程' },
+      { title: '电子签名', desc: '手写签名、文字签名、图片签名，符合 eIDAS 标准' },
+      { title: '签署追踪', desc: '实时追踪签署状态、自动发送提醒邮件' },
+      { title: 'Webhook 通知', desc: '签署完成自动回调，触发 CRM 状态更新' },
+      { title: 'REST API', desc: '完整的 API 接口，支持程序化创建和管理签署流程' },
+    ],
+    quickstart: `<span class="comment"># 作为平台一部分启动</span>\n<span class="cmd">docker compose --profile contracts up -d</span>\n\n<span class="comment"># 访问</span>\nhttp://localhost:84\n\n<span class="comment"># API 示例 — 创建签署请求</span>\n<span class="cmd">curl -X POST http://localhost:84/api/submissions \\</span>\n<span class="cmd">  -H "X-Auth-Token: YOUR_TOKEN" \\</span>\n<span class="cmd">  -d '{"template_id":1,"submitters":[{"email":"client@example.com"}]}'</span>`,
+    arch: `cx330o-contracts/ (DocuSeal)\n├── app/        → Rails 应用核心\n├── config/     → 配置文件\n├── db/         → 数据库迁移\n└── docs/       → API 文档`,
+  },
+  payments: {
+    icon: '💳', title: 'cx330o Payments', tag: 'Web UI + REST API',
+    desc: '统一支付网关（Hyperswitch 集成）。Rust 编写的高性能支付路由，统一接入 Stripe / PayPal / Adyen / Klarna 等 50+ 支付商。支持多币种、智能路由、退款管理、订阅计费、3DS 认证。',
+    features: [
+      { title: '50+ 支付商', desc: 'Stripe / PayPal / Adyen / Klarna / Braintree 等一键接入' },
+      { title: '智能路由', desc: '基于成功率、费率、地区自动选择最优支付通道' },
+      { title: '多币种', desc: '支持 135+ 货币，自动汇率转换' },
+      { title: '订阅计费', desc: '周期性扣款、用量计费、试用期管理' },
+      { title: '退款管理', desc: '全额/部分退款、争议处理、自动对账' },
+      { title: '控制台', desc: '可视化支付数据看板、交易搜索、商户管理' },
+    ],
+    quickstart: `<span class="comment"># 作为平台一部分启动</span>\n<span class="cmd">docker compose --profile payments up -d</span>\n\n<span class="comment"># 访问</span>\n控制台: http://localhost:85\nAPI:    http://localhost:8180\n\n<span class="comment"># API 示例 — 创建支付</span>\n<span class="cmd">curl -X POST http://localhost:8180/payments \\</span>\n<span class="cmd">  -H "api-key: YOUR_API_KEY" \\</span>\n<span class="cmd">  -d '{"amount":1000,"currency":"USD","payment_method":"card"}'</span>`,
+    arch: `cx330o-payments/ (Hyperswitch)\n├── hyperswitch-server     → Rust 支付路由引擎\n├── hyperswitch-web        → 支付页面 SDK\n└── control-center         → 管理控制台`,
+  },
+  experiments: {
+    icon: '🧪', title: 'cx330o Experiments', tag: 'Web UI + SDK',
+    desc: 'A/B 测试与 Feature Flag 平台（GrowthBook 集成）。支持邮件主题测试、Landing Page 变体、定价策略实验。内置贝叶斯统计引擎，自动计算显著性。SDK 支持 JavaScript / Python / Go / Ruby。',
+    features: [
+      { title: 'A/B 测试', desc: '多变量测试、流量分配、自动停止规则' },
+      { title: 'Feature Flags', desc: '渐进式发布、用户分群、环境隔离' },
+      { title: '统计引擎', desc: '贝叶斯分析、显著性检测、置信区间' },
+      { title: '多平台 SDK', desc: 'JavaScript / React / Python / Go / Ruby' },
+      { title: '数据源集成', desc: '连接 BigQuery / Snowflake / Postgres / Mixpanel' },
+      { title: '可视化编辑器', desc: '无代码创建实验，拖拽修改页面元素' },
+    ],
+    quickstart: `<span class="comment"># 作为平台一部分启动</span>\n<span class="cmd">docker compose --profile experiments up -d</span>\n\n<span class="comment"># 访问</span>\nhttp://localhost:86\n\n<span class="comment"># 前端 SDK 集成</span>\n<span class="cmd">npm install @growthbook/growthbook-react</span>`,
+    arch: `cx330o-experiments/ (GrowthBook)\n├── back-end/    → Node.js API 服务\n├── front-end/   → React 管理面板\n└── packages/     → SDK 包（JS/Python/Go/Ruby）`,
+  },
+  voiceagent: {
+    icon: '🎙️', title: 'cx330o VoiceAgent', tag: 'API',
+    desc: 'AI 语音销售 Agent（Bolna 集成）。支持自动外呼、智能对话、实时语音转文字。可配置多种 LLM 后端（OpenAI / Groq），支持多语言语音合成。与 OutreachAI 的 8 阶段销售模型无缝衔接。',
+    actions: [
+      { label: '打开 API (localhost:5001)', type: 'link', value: 'http://localhost:5001' },
+      { label: '复制创建 Agent 命令', type: 'copy', value: 'curl -X POST http://localhost:5001/agent -d \'{"agent_name":"sales_bot","agent_type":"sales"}\'' },
+    ],
+    features: [
+      { title: 'AI 语音对话', desc: '自然语言理解 + 语音合成，模拟真人销售对话' },
+      { title: '多 LLM 后端', desc: 'OpenAI / Groq / Anthropic，可切换' },
+      { title: '实时转录', desc: '通话实时转文字，自动生成通话摘要' },
+      { title: '多语言支持', desc: '英语 / 中文 / 西班牙语 / 日语等 20+ 语言' },
+      { title: 'Webhook 集成', desc: '通话结束自动回调，更新 CRM 记录' },
+      { title: '通话录音', desc: '全程录音存档，支持回放和质检' },
+    ],
+    quickstart: `<span class="comment"># 作为平台一部分启动</span>\n<span class="cmd">docker compose --profile voip up -d</span>\n\n<span class="comment"># API 端口</span>\nhttp://localhost:5001\n\n<span class="comment"># 创建语音 Agent</span>\n<span class="cmd">curl -X POST http://localhost:5001/agent \\</span>\n<span class="cmd">  -d '{"agent_name":"sales_bot","agent_type":"sales"}'</span>`,
+    arch: `cx330o-voip/bolna/\n├── bolna/         → 核心 Agent 框架\n├── examples/      → 示例配置\n└── local_setup/   → 本地部署脚本`,
+  },
+  pagebuilder: {
+    icon: '🎨', title: 'cx330o PageBuilder', tag: 'Web UI',
+    desc: '拖拽式页面构建器（GrapesJS 集成）。无代码创建 Landing Page、邮件模板、产品展示页。内置 50+ 预制组件、响应式设计、SEO 元数据编辑。导出 HTML 直接部署或嵌入营销邮件。',
+    actions: [
+      { label: '打开 GrapesJS 演示', type: 'link', value: 'https://grapesjs.com/demo.html' },
+      { label: '复制安装命令', type: 'copy', value: 'npm install grapesjs grapesjs-preset-webpage @grapesjs/react' },
+    ],
+    features: [
+      { title: '拖拽编辑', desc: '所见即所得，拖拽组件构建页面' },
+      { title: '50+ 预制组件', desc: '表单、轮播、定价表、CTA 按钮等' },
+      { title: '响应式设计', desc: '自动适配桌面 / 平板 / 手机' },
+      { title: '邮件模板', desc: '创建营销邮件模板，兼容主流邮件客户端' },
+      { title: 'SEO 优化', desc: '元标签编辑、Open Graph、结构化数据' },
+      { title: '导出部署', desc: '导出纯 HTML/CSS，一键部署到 CDN' },
+    ],
+    quickstart: `<span class="comment"># 集成到营销模块</span>\n<span class="cmd">npm install grapesjs grapesjs-preset-webpage</span>\n\n<span class="comment"># React 集成</span>\n<span class="cmd">npm install @grapesjs/react</span>`,
+    arch: `cx330o-marketing/page-builder/\n├── src/           → React 应用\n├── templates/     → 预制模板库\n└── plugins/       → GrapesJS 插件`,
+  },
+  privacy: {
+    icon: '🛡️', title: 'cx330o Privacy', tag: '内置模块',
+    desc: 'GDPR / CCPA 合规套件。基于 Klaro.js 的 Cookie 同意管理，自动检测第三方脚本并分类。支持数据主体权利请求（DSAR）处理、隐私政策自动生成、合规审计日志。覆盖欧盟 GDPR、美国 CCPA、巴西 LGPD。',
+    actions: [
+      { label: '打开 Klaro 配置文档', type: 'link', value: 'https://klaro.org/docs' },
+      { label: '复制合规扫描命令', type: 'copy', value: 'python -m gdpr_analyzer --url http://localhost' },
+    ],
+    features: [
+      { title: 'Cookie 同意管理', desc: 'Klaro.js 驱动，自动拦截未授权的追踪脚本' },
+      { title: '多法规支持', desc: 'GDPR / CCPA / LGPD / POPIA 合规模板' },
+      { title: '数据删除请求', desc: '一键处理用户数据删除/导出请求' },
+      { title: '隐私政策生成', desc: '根据使用的服务自动生成隐私政策' },
+      { title: '审计日志', desc: '记录所有同意变更和数据处理操作' },
+      { title: '合规扫描', desc: '自动扫描页面中的第三方脚本和 Cookie' },
+    ],
+    quickstart: `<span class="comment"># 已内置到 Dashboard，无需额外安装</span>\n<span class="comment"># Klaro.js 配置位于 index.html</span>\n\n<span class="comment"># 自定义同意选项</span>\n编辑 klaroConfig.services 数组\n\n<span class="comment"># GDPR 审计工具</span>\n<span class="cmd">python -m gdpr_analyzer --url http://localhost</span>`,
+    arch: `cx330o-privacy/\n├── klaro-config.js   → 同意管理配置\n├── gdpr-analyzer/    → 合规扫描工具\n└── dsar/             → 数据主体请求处理`,
+  },
+  i18n: {
+    icon: '🌍', title: 'cx330o i18n', tag: 'SDK 框架',
+    desc: '多语言 + 多币种国际化框架。基于 i18next 生态，支持 50+ 语言自动翻译、RTL 布局适配、货币/日期/数字本地化格式。React 组件级翻译，SSR 友好。支持翻译文件热更新和 AI 辅助翻译。',
+    actions: [
+      { label: '打开 i18next 文档', type: 'link', value: 'https://www.i18next.com/' },
+      { label: '复制安装命令', type: 'copy', value: 'npm install i18next react-i18next i18next-http-backend' },
+    ],
+    features: [
+      { title: '50+ 语言', desc: '内置主流语言包，支持自定义扩展' },
+      { title: 'React 集成', desc: 'react-i18next 组件级翻译，Hook API' },
+      { title: '多币种', desc: '135+ 货币格式化，实时汇率转换' },
+      { title: 'RTL 支持', desc: '阿拉伯语 / 希伯来语等从右到左布局' },
+      { title: 'AI 翻译', desc: 'LLM 辅助翻译，保持上下文一致性' },
+      { title: '热更新', desc: '翻译文件变更无需重启，实时生效' },
+    ],
+    quickstart: `<span class="comment"># 安装 i18n 依赖</span>\n<span class="cmd">npm install i18next react-i18next i18next-http-backend</span>\n\n<span class="comment"># 初始化</span>\nimport i18n from 'i18next';\nimport { initReactI18next } from 'react-i18next';\ni18n.use(initReactI18next).init({ lng: 'en', fallbackLng: 'en' });`,
+    arch: `cx330o-i18n/\n├── locales/       → 语言包 (en/zh/ja/es/ar/...)\n├── currencies/    → 货币格式配置\n└── sdk/           → React/Next.js 集成包`,
+  },
+};
+
+function render(svc) {
+  const s = services[svc];
+  if (!s) {
+    document.getElementById('pageTitle').textContent = '未知服务';
+    document.getElementById('content').innerHTML = '<div class="cx-embed-error"><h2>未找到该服务</h2><a href="/">返回首页</a></div>';
+    return;
+  }
+
+  document.title = s.title + ' — cx330o';
+  document.getElementById('pageTitle').textContent = s.title;
+
+  let actionsHtml = '';
+  if (s.actions && s.actions.length) {
+    actionsHtml = '<div class="cx-actions">' + s.actions.map((a, i) => {
+      if (a.type === 'copy') {
+        return `<button class="cx-action-btn" onclick="copyCmd(this, '${a.value.replace(/'/g, "\\'")}')">📋 ${a.label}</button>`;
+      }
+      return `<a class="cx-action-btn cx-action-link" href="${a.value}" target="_blank">🔗 ${a.label}</a>`;
+    }).join('') + '</div>';
+  }
+
+  let html = `
+    <div class="cx-hero">
+      <span class="cx-hero-icon">${s.icon}</span>
+      <div>
+        <h1>${s.title}</h1>
+        <span class="cx-tag">${s.tag}</span>
+      </div>
+    </div>
+    ${actionsHtml}
+    <div class="cx-desc">${s.desc}</div>
+    <div class="cx-section">
+      <h2>核心功能</h2>
+      <div class="cx-feature-grid">
+        ${s.features.map(f => `<div class="cx-feature-item"><h4>${f.title}</h4><p>${f.desc}</p></div>`).join('')}
+      </div>
+    </div>
+  `;
+
+  if (s.engines) {
+    html += `
+    <div class="cx-section">
+      <h2>支持的引擎</h2>
+      <table class="cx-table">
+        <tr><th>引擎</th><th>数据类型</th><th>说明</th></tr>
+        ${s.engines.map(e => `<tr><td style="color:var(--cx-brand-purple-light);font-family:var(--cx-font-mono);">${e[0]}</td><td>${e[1]}</td><td>${e[2]}</td></tr>`).join('')}
+      </table>
+    </div>`;
+  }
+
+  html += `
+    <div class="cx-section">
+      <h2>快速开始</h2>
+      <div class="cx-code-block">${s.quickstart}</div>
+    </div>
+    <div class="cx-section">
+      <h2>源码结构</h2>
+      <div class="cx-arch-box">${s.arch}</div>
+    </div>
+  `;
+
+  document.getElementById('content').innerHTML = html;
+}
+
+const params = new URLSearchParams(window.location.search);
+render(params.get('svc'));
+
+function copyCmd(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✅ 已复制';
+    btn.style.borderColor = 'var(--cx-status-ok)';
+    btn.style.color = 'var(--cx-status-ok)';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 2000);
+  });
+}
+
+</script>
+</body>
+</html>
