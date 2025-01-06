@@ -1,0 +1,64 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "loading": "Loading...",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "leads": "Leads",
+    "outreach": "Outreach",
+    "crm": "CRM",
+    "contracts": "Contracts",
+    "payments": "Payments",
+    "marketing": "Marketing",
+    "analytics": "Analytics",
+    "experiments": "Experiments",
+    "voip": "VoIP",
+    "settings": "Settings"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "username": "Username",
+    "password": "Password",
+    "loginButton": "Sign In",
+    "loginError": "Invalid username or password"
+  },
+  "leads": {
+    "title": "Lead Management",
+    "newLead": "New Lead",
+    "score": "Score",
+    "source": "Source",
+    "status": "Status",
+    "company": "Company",
+    "email": "Email"
+  },
+  "contracts": {
+    "title": "Contracts & Signatures",
+    "newContract": "New Contract",
+    "template": "Template",
+    "pending": "Pending Signature",
+    "signed": "Signed",
+    "expired": "Expired"
+  },
+  "payments": {
+    "title": "Payment Management",
+    "amount": "Amount",
+    "currency": "Currency",
+    "status": "Status",
+    "refund": "Refund",
+    "subscription": "Subscription"
+  }
+}
