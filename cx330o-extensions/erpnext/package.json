@@ -1,0 +1,18 @@
+{
+  "name": "cx330o-erpnext-extension",
+  "description": "cx330o ERP Extension",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "homepage": "",
+  "author": "cx330o",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": ""
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "onscan.js": "^1.5.2"
+  }
+}
